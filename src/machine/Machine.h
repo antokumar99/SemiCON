@@ -1,24 +1,29 @@
 #ifndef MACHINE_H
 #define MACHINE_H
 
+#include <memory>
 #include <string>
-using namespace std;
+#include <vector>
+
+#include "../sensor/Sensor.h"
 
 class Machine
 {
 public:
+    Machine();
 
     void start();
-
     void stop();
-
     void reset();
 
-    string getStatus() const;
+    std::string getStatus() const;
+
+    void readSensors();
 
 private:
+    std::string status;
 
-    string status = "IDLE";
+    std::vector<std::unique_ptr<Sensor>> sensors;
 };
 
 #endif

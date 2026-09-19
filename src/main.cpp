@@ -8,6 +8,10 @@ int main()
 {
     Machine machine;
 
+    cout << "====================================\n";
+    cout << " Semiconductor Equipment Simulator\n";
+    cout << "====================================\n";
+
     cout << "Machine status: "
               << machine.getStatus()
               << '\n';
@@ -18,17 +22,17 @@ int main()
               << machine.getStatus()
               << '\n';
 
+    for (int i = 0; i < 5; ++i)
+    {
+        machine.readSensors();
+    }
+
     machine.stop();
 
     cout << "Machine status: "
               << machine.getStatus()
               << '\n';
 
-    machine.reset();
-
-    cout << "Machine status: "
-              << machine.getStatus()
-              << '\n';
 
     return 0;
 }
