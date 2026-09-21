@@ -30,7 +30,7 @@ SensorMonitor::~SensorMonitor()
 
 void SensorMonitor::start()
 {
-    if (running)
+    if (running.load())
     {
         return;
     }
@@ -46,7 +46,7 @@ void SensorMonitor::start()
 
 void SensorMonitor::stop()
 {
-    if (!running)
+    if (!running.load())
     {
         return;
     }
@@ -63,24 +63,20 @@ void SensorMonitor::stop()
 
 void SensorMonitor::monitoringLoop()
 {
-    while (running)
+    while (running.load())
     {
+        std::cout << "\n--- Sensor Monitoring ---\n";
+
+        for (const auto& sensor : sensors)
         {
-            std::lock_guard<std::mutex> lock(dataMutex);
+            double value = sensor->read();
 
-            std::cout << "\n--- Sensor Readings ---\n";
-
-            for (const auto& sensor : sensors)
-            {
-                double value = sensor->read();
-
-                std::cout << sensor->getName()
-                          << ": "
-                          << value
-                          << " "
-                          << sensor->getUnit()
-                          << '\n';
-            }
+            std::cout << sensor->getName()
+                      << ": "
+                      << value
+                      << " "
+                      << sensor->getUnit()
+                      << '\n';
         }
 
         std::unique_lock<std::mutex> lock(dataMutex);
