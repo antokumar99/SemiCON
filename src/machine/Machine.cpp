@@ -6,37 +6,55 @@
 #include "../sensor/PressureSensor.h"
 #include "../sensor/MotorSensor.h"
 
+#include "../state/IdleState.h"
+
 Machine::Machine()
-    : status("IDLE")
 {
-    sensors.push_back(std::make_unique<TemperatureSensor>());
-    sensors.push_back(std::make_unique<PressureSensor>());
-    sensors.push_back(std::make_unique<MotorSensor>());
+    currentState = std::make_unique<IdleState>();
+
+    sensors.push_back(
+        std::make_unique<TemperatureSensor>()
+    );
+
+    sensors.push_back(
+        std::make_unique<PressureSensor>()
+    );
+
+    sensors.push_back(
+        std::make_unique<MotorSensor>()
+    );
 }
 
 void Machine::start()
 {
-    status = "RUNNING";
+    currentState->start(*this);
 }
 
 void Machine::stop()
 {
-    status = "STOPPED";
+    currentState->stop(*this);
 }
 
 void Machine::reset()
 {
-    status = "IDLE";
+    currentState->reset(*this);
 }
 
 std::string Machine::getStatus() const
 {
-    return status;
+    return currentState->getName();
+}
+
+void Machine::changeState(
+    std::unique_ptr<MachineState> newState
+)
+{
+    currentState = std::move(newState);
 }
 
 void Machine::readSensors()
 {
-    std::cout << "\n--- Sensor Readings ---\n";
+    std::cout << "\n--- Machine Sensor Readings ---\n";
 
     for (const auto& sensor : sensors)
     {

@@ -1,38 +1,68 @@
+#include <chrono>
 #include <iostream>
+#include <thread>
 
-#include "machine/Machine.h"
-using namespace std;
-
+#include "controller/MachineController.h"
 
 int main()
 {
-    Machine machine;
+    std::cout << "====================================\n";
+    std::cout << " Semiconductor Equipment Simulator\n";
+    std::cout << "====================================\n";
 
-    cout << "====================================\n";
-    cout << " Semiconductor Equipment Simulator\n";
-    cout << "====================================\n";
+    MachineController controller;
 
-    cout << "Machine status: "
-              << machine.getStatus()
+    std::cout << "\nInitial machine state: "
+              << controller.getMachineStatus()
               << '\n';
 
-    machine.start();
+    // -------------------------------
+    // START MACHINE
+    // -------------------------------
 
-    cout << "Machine status: "
-              << machine.getStatus()
+    std::cout << "\nStarting machine...\n";
+
+    controller.startMachine();
+
+    std::cout << "Machine state: "
+              << controller.getMachineStatus()
               << '\n';
 
-    for (int i = 0; i < 5; ++i)
-    {
-        machine.readSensors();
-    }
+    std::this_thread::sleep_for(
+        std::chrono::seconds(5)
+    );
 
-    machine.stop();
+    // -------------------------------
+    // STOP MACHINE
+    // -------------------------------
 
-    cout << "Machine status: "
-              << machine.getStatus()
+    std::cout << "\nStopping machine...\n";
+
+    controller.stopMachine();
+
+    std::cout << "Machine state: "
+              << controller.getMachineStatus()
               << '\n';
 
+    std::this_thread::sleep_for(
+        std::chrono::seconds(2)
+    );
+
+    // -------------------------------
+    // RESET MACHINE
+    // -------------------------------
+
+    std::cout << "\nResetting machine...\n";
+
+    controller.resetMachine();
+
+    std::cout << "Machine state: "
+              << controller.getMachineStatus()
+              << '\n';
+
+    std::cout << "\n====================================\n";
+    std::cout << " Program finished successfully\n";
+    std::cout << "====================================\n";
 
     return 0;
 }

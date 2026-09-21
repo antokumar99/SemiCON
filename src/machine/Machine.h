@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "../sensor/Sensor.h"
+#include "../state/MachineState.h"
 
 class Machine
 {
@@ -20,8 +21,10 @@ public:
 
     void readSensors();
 
+    void changeState(std::unique_ptr<MachineState> newState);
+
 private:
-    std::string status;
+    std::unique_ptr<MachineState> currentState;
 
     std::vector<std::unique_ptr<Sensor>> sensors;
 };
